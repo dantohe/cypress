@@ -16,24 +16,23 @@ class PatientFromQRDA
 end
 
 
-# the main class 
+# the main processor 
 class MRNfinder
 	
-	attr_accessor :testQRDAFile, :masterQRDAFile, :file
+	attr_accessor :testQRDAFile
 
 	#constructor
 	def initialize (testQRDAFile)
 		@testQRDAFile=testQRDAFile
 	end
+	
 
-
-	# loads the patients (records) from the archived QRDA file 
+	# loads the patient (records) from the archived QRDA file 
 	def findOriginalMRNForTests
-		
+		#the test patinets are loaded from the file
 		testPatients=Utils::collectQRDAPatientsFromZip(testQRDAFile)
 		#the master records are loaded from Cypress production 
 		masterRecords=Utils::getMasterRecordsFromCypress
-
 		puts "\nLoaded #{testPatients.length} test patients"
 		puts "Loaded #{masterRecords.length} master patients\n"
 		print "Processing...."
@@ -43,14 +42,14 @@ class MRNfinder
 	#find matches for test patients
 	def iterateThroughRecordsAndWriteQueries(masterRecords, testPatients)
 
-		#will store the results
+		#store the results
 		testToMasterHash= Hash.new
 
 		for testRecord in testPatients
 			#iterate through master records and find candidates 
 			print "."
 			candidates= Utils::iterateThroughMasterRecordsAndFindCandidates(masterRecords, testRecord.patient)
-			#resolve cadidates to unique MRNs
+			#resolve cadidates to unique MRNs - with other words resolve the candidates
 			Utils::getUniqueMedicalRecordNumber(candidates,testRecord,testToMasterHash)
 		end
 
@@ -71,6 +70,7 @@ class Utils
 	def self.getUniqueMedicalRecordNumber(candidates,testRecord,testToMasterHash)
 
 
+		#currently the candidates are records - get only the IDs out of all those records
 		candidateIDs=Utils::collectMedicalRecordNumbers(candidates)
 
 		if(candidateIDs.length==1)
@@ -111,7 +111,7 @@ class Utils
 		for masterRecord in masterRecords
 			#simple conditions that will reduce the record pool
 			if(masterRecord.gender==testRecord.gender && masterRecord.ethnicity[:code]==testRecord.ethnicity[:code] && masterRecord.race[:code] == testRecord.race[:code])
-				#go inside the sections and collect codes 
+				#go inside the sections and collect codes and find if the codes from the test are ALL contained in the the same section of the master 
 				allergiesMatch=Utils::matchCodes(testRecord.allergies,masterRecord.allergies)
 				care_goalsMatch=Utils::matchCodes(testRecord.care_goals,masterRecord.care_goals)
 				conditionsMatch=Utils::matchCodes(testRecord.conditions,masterRecord.conditions)
@@ -122,7 +122,7 @@ class Utils
 				proceduresMatch=Utils::matchCodes(testRecord.procedures,masterRecord.procedures)
 				insurance_providersMatch=Utils::matchCodes(testRecord.insurance_providers,masterRecord.insurance_providers)
 
-				#create candidates based on matching codes 
+				#create candidates based on matching codes - if all the above match then consider this master as candidate
 				if(allergiesMatch && care_goalsMatch && conditionsMatch && encountersMatch &&  immunizationsMatch && medical_equipmentMatch &&  medicationsMatch && proceduresMatch &&  insurance_providersMatch)
 					candidates<< masterRecord
 				end
@@ -159,29 +159,21 @@ class Utils
 		end
 	end
 
-	def self.matchCodes(patientEntries,masterPatientEntries)
+	#identifies if all the codes in a particular section of the test are in the same section of the master
+	def self.matchCodes(testEntries,masterEntries)
 		result = false
 
-		patientCodesHash= Hash.new 
-		patientEntries.each do |thisEntry|
-			createCodeHash(thisEntry, patientCodesHash)
+		testCodesHash= Hash.new 
+		testEntries.each do |thisEntry|
+			createCodeHash(thisEntry, testCodesHash)
 		end
 
 		masterCodesHash= Hash.new 
-		masterPatientEntries.each do |thisEntry|
+		masterEntries.each do |thisEntry|
 			createCodeHash(thisEntry, masterCodesHash)
 		end
 
-		# puts"PAT"
-		# patientCodesHash.each_pair do |key, value|
-		# 	puts "\t#{key}\t#{value}"
-		# end
-		# puts"MASTER"
-		# masterCodesHash.each_pair do |key, value|
-		# 	puts "\t#{key}\t#{value}"
-		# end
-
-		if (patientCodesHash.to_a - masterCodesHash.to_a).empty?
+		if (testCodesHash.to_a - masterCodesHash.to_a).empty?
 			result=true
 		end
 		result		
@@ -197,6 +189,7 @@ end
 
 if(ARGV.length<1)
 	puts "One argument is needed: \n\tthe path to the zip containing the QRDA1 test files"
+	puts "Example: \n\tbundle exec ruby findPatientsIDs.rb test/T63-22.zip"
 	abort
 end
 
