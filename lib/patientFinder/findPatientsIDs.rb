@@ -67,6 +67,7 @@ end
 # a collection of utilities grouped together under the same roof
 class Utils
 
+	#resolves the candidates to the test files (one test file - one candidate - when multiple candidates are found manual anotation is used)
 	def self.getUniqueMedicalRecordNumber(candidates,testRecord,testToMasterHash)
 
 
