@@ -72,7 +72,8 @@ class Utils
 
 
 		#currently the candidates are records - get only the IDs out of all those records
-		candidateIDs=Utils::collectMedicalRecordNumbers(candidates)
+		# candidateIDs=Utils::collectMedicalRecordNumbers(candidates)
+		candidateIDs=candidates.map(&:medical_record_number)
 
 		if(candidateIDs.length==1)
 			testToMasterHash[testRecord.fileName]=candidateIDs.first			
@@ -97,22 +98,31 @@ class Utils
 		end
 	end	
 
-	#extracts the ids from a set of records 
-	def self.collectMedicalRecordNumbers(candidates)
-		ids=Array.new
-		for candidate in candidates
-    		ids<< candidate.medical_record_number
-		end
-		ids
-	end
+	# #extracts the ids from a set of records 
+	# def self.collectMedicalRecordNumbers(candidates)
+	# 	ids=Array.new
+	# 	for candidate in candidates
+ #   		ids<< candidate.medical_record_number
+	# 	end
+	# 	ids
+	# end
 
 	#a utility that iterates through a set of master records to find possible matches (candidates) for a test cord
 	def self.iterateThroughMasterRecordsAndFindCandidates(masterRecords,testRecord)
-		candidates=Array.new 
-		for masterRecord in masterRecords
-			#simple conditions that will reduce the record pool
+		
+		candidates=Array.new
+		# candidates
+		masterRecords.each {|masterRecord|
+				#simple conditions that will reduce the record pool
 			if(masterRecord.gender==testRecord.gender && masterRecord.ethnicity[:code]==testRecord.ethnicity[:code] && masterRecord.race[:code] == testRecord.race[:code])
 				#go inside the sections and collect codes and find if the codes from the test are ALL contained in the the same section of the master 
+				# sections = [:allergies, :care_goals, :conditions, :encounters, :immunizations, :medical_equipment, :medications, :procedures, :insurance_providers ]
+				# master_is_match = sections.all? {|section| Utils::matchCodes(testRecord[section],masterRecord[section])}
+				
+				# if(master_is_match)
+				# 	candidates<< masterRecord
+				# end
+				
 				allergiesMatch=Utils::matchCodes(testRecord.allergies,masterRecord.allergies)
 				care_goalsMatch=Utils::matchCodes(testRecord.care_goals,masterRecord.care_goals)
 				conditionsMatch=Utils::matchCodes(testRecord.conditions,masterRecord.conditions)
@@ -128,7 +138,7 @@ class Utils
 					candidates<< masterRecord
 				end
 			end	
-		end	
+		}
 		candidates
 	end
 
@@ -162,7 +172,6 @@ class Utils
 
 	#identifies if all the codes in a particular section of the test are in the same section of the master
 	def self.matchCodes(testEntries,masterEntries)
-		result = false
 
 		testCodesHash= Hash.new 
 		testEntries.each do |thisEntry|
@@ -173,11 +182,7 @@ class Utils
 		masterEntries.each do |thisEntry|
 			createCodeHash(thisEntry, masterCodesHash)
 		end
-
-		if (testCodesHash.to_a - masterCodesHash.to_a).empty?
-			result=true
-		end
-		result		
+		(testCodesHash.to_a - masterCodesHash.to_a).empty?
 	end
 
 	#collects records from a Cypress mongo db
