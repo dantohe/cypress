@@ -162,10 +162,9 @@ module PatientFinder
             (test_codes_hash.to_a - master_code_hash.to_a).empty?
         end
     
-        #collects records from a Cypress mongo db
+        #collects master records from a Cypress mongo db
+        
         def self.get_master_records_from_cypress
-            #TODO remove the production refrence - but first move all the master records into development - we will be using only development at that point
-            Mongoid.load!("mongoid.yml", :production)
             Record.all_of(:last.in => [ /\b[A-Z]\b/])
         end
     end
