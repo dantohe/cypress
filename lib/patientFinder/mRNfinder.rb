@@ -22,26 +22,8 @@ module PatientFinder
             master_records=PatientFinder::Utils::get_master_records_from_cypress
 
             #return the results in a hash            
-            get_MRN_for_tests(master_records, test_patients)
-        end
-    
-        private
-        #find matches for test patients
-        def get_MRN_for_tests(master_records, test_patients)
-    
-            #store the results
-            tests_to_MRNs= Hash.new
+            PatientFinder::Utils::get_MRNs(master_records, test_patients)
             
-            #iterate through master records and find candidates 
-            test_patients.each { |test_patient|
-                #each test patient might have one or more MRN candidates
-                candidates= PatientFinder::Utils::get_candidates_for_test(master_records, test_patient.record)
-                
-                #resolve cadidates to unique MRNs - with other words resolve the candidates
-                PatientFinder::Utils::get_MRN_for_tests(candidates, test_patient, tests_to_MRNs)
-            }
-    
-            tests_to_MRNs
         end
     end
 end

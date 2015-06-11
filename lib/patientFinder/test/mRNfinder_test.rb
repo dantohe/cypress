@@ -6,7 +6,6 @@ require 'minitest/autorun'
 class TestPatientFinder <  Minitest::Test
     
     #some constants
-    # ZIP_FILE_T63_21="/home/ubuntu/workspace/lib/patientFinder/test/fixtures/artifacts/T63-21.zip"
     ZIP_FILE_T63_21="test/fixtures/artifacts/T63-21.zip"
     ZIP_FILE_T63_22="test/fixtures/artifacts/T63-22.zip"
     ZIP_FILE_T63_23="test/fixtures/artifacts/T63-23.zip"

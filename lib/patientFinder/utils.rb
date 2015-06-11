@@ -10,6 +10,24 @@ Mongoid.load!("mongoid.yml", :development)
 module PatientFinder
 # a collection of utilities grouped together under the same roof
     class Utils
+        
+        #find matches for test patients
+        def self.get_MRNs(master_records, test_patients)
+    
+            #store the results
+            tests_to_MRNs= Hash.new
+            
+            #iterate through master records and find candidates 
+            test_patients.each { |test_patient|
+                #each test patient might have one or more MRN candidates
+                candidates= PatientFinder::Utils::get_candidates_for_test(master_records, test_patient.record)
+                
+                #resolve cadidates to unique MRNs - with other words resolve the candidates
+                PatientFinder::Utils::get_MRN_for_tests(candidates, test_patient, tests_to_MRNs)
+            }
+    
+            tests_to_MRNs
+        end
     
         #resolves the candidates to the test files (one test file - one candidate - when multiple candidates are found manual anotation is used)
         def self.get_MRN_for_tests(candidates,test_record,test_to_MRN_hash)
