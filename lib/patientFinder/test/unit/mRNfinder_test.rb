@@ -3,16 +3,8 @@ require 'minitest/autorun'
 
 class TestPatientFinder <  Minitest::Test
     
-    #some constants
-    ZIP_FILE_T63_21="test/fixtures/artifacts/T63-21.zip"
-    ZIP_FILE_T63_22="test/fixtures/artifacts/T63-22.zip"
-    ZIP_FILE_T63_23="test/fixtures/artifacts/T63-23.zip"
-    ZIP_FILE_T63_24="test/fixtures/artifacts/T63-24.zip"
-    
-    
-    
     def test_constructor
-        assert_equal(@mrn_finder_1.test_archive, ZIP_FILE_T63_21)
+        assert_equal(@mrn_finder_1.test_archive, "test/fixtures/artifacts/T63-21.zip")
     end
     
     def test_get_original_MRNs_for_tests_1
@@ -36,10 +28,11 @@ class TestPatientFinder <  Minitest::Test
     end
     
     def setup
-        @mrn_finder_1=PatientFinder::MRNfinder.new(ZIP_FILE_T63_21)
-        @mrn_finder_2=PatientFinder::MRNfinder.new(ZIP_FILE_T63_22)
-        @mrn_finder_3=PatientFinder::MRNfinder.new(ZIP_FILE_T63_23)
-        @mrn_finder_4=PatientFinder::MRNfinder.new(ZIP_FILE_T63_24)
+        
+        @mrn_finder_1=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-21.zip")
+        @mrn_finder_2=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-22.zip")
+        @mrn_finder_3=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-23.zip")
+        @mrn_finder_4=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-24.zip")
         
         @results_for_ZIP_FILE_T63_21 = {"0_Hazel_Abbott.xml" => "61aa020431420dce8f53b74352a990fe", 
                         "1_Ruth_Baker.xml" => "343731b99c6bdb35a1fc31ce9ed6f889", 

@@ -11,6 +11,15 @@ module PatientFinder
 # a collection of utilities grouped together under the same roof
     class Utils
         
+        #some of records are created ambiguous on purpose (fr example some of them contain only encounters) - in order to disambiguate human intervention is needed - the following hash resolves the ambiguos cases
+       AMBIGUOUS_PATIENTS = {["ee85c89f24946e2ddca12c6edc5181dc", "eb6af018e11320f5c163624beb83767d"] => "ee85c89f24946e2ddca12c6edc5181dc"}            
+        AMBIGUOUS_PATIENTS[["0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d"]] = "0a26a978d07240b0f917e96727db31d8"    
+        AMBIGUOUS_PATIENTS[["929dd1f2c4c54c024fd4d18b1307fdb1", "29cecb1da08efd331fce823e12b607d5"]] = "929dd1f2c4c54c024fd4d18b1307fdb1"    
+        AMBIGUOUS_PATIENTS[["5f118631f09abdbdeb1962dc28bfeb27", "a6300c43651965991a4308ffaeb5381d"]] = "5f118631f09abdbdeb1962dc28bfeb27"    
+        AMBIGUOUS_PATIENTS[["7a86cc6d87cb84461ea190e7c706d81b", "258ee9087c5a5fe359ceb3aafff0dd76"]] = "258ee9087c5a5fe359ceb3aafff0dd76"    
+        AMBIGUOUS_PATIENTS[["7a86cc6d87cb84461ea190e7c706d81b", "1be81ce59da982792026cc82d95bc10e","511b530c8662f8df97eb97b3eefa0618","258ee9087c5a5fe359ceb3aafff0dd76"]] = "258ee9087c5a5fe359ceb3aafff0dd76"    
+        AMBIGUOUS_PATIENTS[["fed089904c10b81c036adddedddebe7b", "846c1c2ba8370c2f5504b315cc4b1d5d", "b5633133e3421216ced2bdef4dbf382d", "0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","b54a4e3ab37de7e5f8094793afb8a699","2678a4e396aaec03b860d5aeadcad8e6","929dd1f2c4c54c024fd4d18b1307fdb1","fdea0c22270417d9e59f20b07f642679","91bd37f9cebf7b6ef9f72d7fd6148a81","0085074bb549ffefffa6e16ff34df140","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d","470f57b022eaeffd4d599078e851a56d","0dbaf9336f7aa1590265250a0eebe548","29cecb1da08efd331fce823e12b607d5","d156a6d38e10efc30eda3cace7456537","8130b2ff5774f1593c86eba8dca4c37b","697e147f076648275e518e7b3ff41dcd"]] = "fed089904c10b81c036adddedddebe7b"       
+        
         #find matches for test patients
         def self.get_MRNs(master_records, test_patients)
     
@@ -20,43 +29,30 @@ module PatientFinder
             #iterate through master records and find candidates 
             test_patients.each { |test_patient|
                 #each test patient might have one or more MRN candidates
-                candidates= PatientFinder::Utils::get_candidates_for_test(master_records, test_patient.record)
+                candidates = get_candidates_for_test(master_records, test_patient.record)
                 
                 #resolve cadidates to unique MRNs - with other words resolve the candidates
-                PatientFinder::Utils::get_MRN_for_tests(candidates, test_patient, tests_to_MRNs)
+                get_MRN_for_tests(candidates.map(&:medical_record_number), test_patient, tests_to_MRNs)
             }
     
             tests_to_MRNs
         end
+        
+        #resolves ambiguos candidates to a unique MRN 
+        def self.get_MRN_for_ambiguous(candidate_MRNs)
+            AMBIGUOUS_PATIENTS.each_pair {  |ambiguous_entries, mrn| 
+                return mrn if (candidate_MRNs-ambiguous_entries).empty?
+            }
+            "too ambiguous #{candidate_MRNs}"
+        end
     
         #resolves the candidates to the test files (one test file - one candidate - when multiple candidates are found manual anotation is used)
-        def self.get_MRN_for_tests(candidates,test_record,test_to_MRN_hash)
-    
-    
-            #currently the candidates are records - get only the IDs out of all those records
-            # candidate_MRNs=Utils::collectMedicalRecordNumbers(candidates)
-            candidate_MRNs=candidates.map(&:medical_record_number)
-    
+        def self.get_MRN_for_tests(candidate_MRNs, test_record, test_to_MRN_hash)
+            
             if(candidate_MRNs.length==1)
-                test_to_MRN_hash[test_record.fileName]=candidate_MRNs.first            
-            elsif((candidate_MRNs.length==2) & (candidate_MRNs & ["ee85c89f24946e2ddca12c6edc5181dc", "eb6af018e11320f5c163624beb83767d"]).present?)
-                test_to_MRN_hash[test_record.fileName]="ee85c89f24946e2ddca12c6edc5181dc"            
-            elsif((candidate_MRNs.length==4) & (candidate_MRNs & ["7a86cc6d87cb84461ea190e7c706d81b", "1be81ce59da982792026cc82d95bc10e","511b530c8662f8df97eb97b3eefa0618","258ee9087c5a5fe359ceb3aafff0dd76"]).present?)
-                test_to_MRN_hash[test_record.fileName]="258ee9087c5a5fe359ceb3aafff0dd76"            
-            elsif((candidate_MRNs.length==4) & (candidate_MRNs & ["0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d"]).present?)
-                test_to_MRN_hash[test_record.fileName]="0a26a978d07240b0f917e96727db31d8"    
-            elsif((candidate_MRNs.length==2) & (candidate_MRNs & ["929dd1f2c4c54c024fd4d18b1307fdb1", "29cecb1da08efd331fce823e12b607d5"]).present?)
-                test_to_MRN_hash[test_record.fileName]="929dd1f2c4c54c024fd4d18b1307fdb1"    
-            elsif((candidate_MRNs.length==2) & (candidate_MRNs & ["5f118631f09abdbdeb1962dc28bfeb27", "a6300c43651965991a4308ffaeb5381d"]).present?)
-                test_to_MRN_hash[test_record.fileName]="5f118631f09abdbdeb1962dc28bfeb27"    
-            elsif((candidate_MRNs.length==2) & (candidate_MRNs & ["7a86cc6d87cb84461ea190e7c706d81b", "258ee9087c5a5fe359ceb3aafff0dd76"]).present?)
-                test_to_MRN_hash[test_record.fileName]="258ee9087c5a5fe359ceb3aafff0dd76"    
-            elsif((candidate_MRNs.length>8) & (candidate_MRNs & ["fed089904c10b81c036adddedddebe7b", "846c1c2ba8370c2f5504b315cc4b1d5d", "b5633133e3421216ced2bdef4dbf382d", "0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","b54a4e3ab37de7e5f8094793afb8a699","2678a4e396aaec03b860d5aeadcad8e6","929dd1f2c4c54c024fd4d18b1307fdb1","fdea0c22270417d9e59f20b07f642679","91bd37f9cebf7b6ef9f72d7fd6148a81","0085074bb549ffefffa6e16ff34df140","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d","470f57b022eaeffd4d599078e851a56d","0dbaf9336f7aa1590265250a0eebe548","29cecb1da08efd331fce823e12b607d5","d156a6d38e10efc30eda3cace7456537","8130b2ff5774f1593c86eba8dca4c37b","697e147f076648275e518e7b3ff41dcd"]).present?)
-                test_to_MRN_hash[test_record.fileName]="fed089904c10b81c036adddedddebe7b"    
+                test_to_MRN_hash[test_record.fileName]=candidate_MRNs.first
             else
-                for v in candidate_MRNs
-                    puts "\t#{v}"
-                end 
+                test_to_MRN_hash[test_record.fileName]=get_MRN_for_ambiguous(candidate_MRNs)
             end
         end    
     
@@ -163,9 +159,9 @@ module PatientFinder
         end
     
         #collects master records from a Cypress mongo db
-        
         def self.get_master_records_from_cypress
             Record.all_of(:last.in => [ /\b[A-Z]\b/])
         end
+        
     end
 end
