@@ -3,6 +3,6 @@ require 'rake/testtask'
 
 Rake::TestTask.new do |t|
   # t.pattern = '/home/ubuntu/workspace/lib/patientFinder/test/*_test.rb'
-  t.pattern = 'test/*_test.rb'
+  t.pattern = 'test/unit/*_test.rb'
     # t.pattern = 'tests/**/*_test.rb'
 end
