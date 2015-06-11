@@ -16,6 +16,6 @@ results_hash=patient_finder.get_original_MRNs_for_tests
 
 #printing results
 results_hash.each_pair do |key, value|
-    puts "#{key}\t\t\t#{value}"
+    puts "\"#{key}\"=>\"#{value}\","
 end
 
