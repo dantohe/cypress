@@ -55,18 +55,6 @@ module PatientFinder
             return get_MRN_for_ambiguous(candidate_MRNs) if (candidate_MRNs.length>1)
         end
         
-    
-        #finds sections with data for a record (out of a array of given sections)    
-        # def self.get_non_empty_sections_for_record(sections, record)
-        #     sections_with_data=Array.new
-        #     sections.each{ |section|
-        #         if !(record[section].nil? || record[section].empty?)
-        #             sections_with_data<< section
-        #         end
-        #     }
-        #     sections_with_data
-        # end
-    
         #a utility that iterates through a set of master records to find possible matches (candidates) for a test cord
         def self.get_candidates_for_test(master_records,test_record)
             
@@ -75,38 +63,20 @@ module PatientFinder
             master_records.each { |master_record|
             
                 #simple conditions that will reduce the record pool
-                if(master_record.gender==test_record.gender && master_record.ethnicity[:code]==test_record.ethnicity[:code] && master_record.race[:code] == test_record.race[:code])
+                if(master_record.gender==test_record.gender &&
+                    master_record.ethnicity[:code]==test_record.ethnicity[:code] &&
+                    master_record.race[:code] == test_record.race[:code])
                     
                     #go inside the sections and collect codes and find if the codes from the test are ALL contained in the the same section of the master 
-                    # sections = [:allergies, :care_goals, :conditions, :encounters, :immunizations, :medical_equipment, :medications, :procedures, :insurance_providers ]
-                
-                    # binding.pry
-                    #TODO - couldn't get this to work on an elegant way - further work needed in order to make it nice
-                    # get_non_empty_sections_for_record(sections, test_record).each{ |sec|
-                    # puts "#{sec}"
-                    # }
-                    # sections_with_data=get_non_empty_sections_for_record(sections, test_record)
+                    sections = [:allergies, :care_goals, :conditions, :encounters, :immunizations, :medical_equipment, :medications, :procedures, :insurance_providers ]
+                    sections_with_data = sections.select { |section| test_record[section].present? }
                     
-                    # master_is_match = sections_with_data.all? {|section| Utils::codes_match?(test_record[section],master_record[section])}
+                    master_is_match = sections_with_data.all? {|section| codes_match?(test_record.send(section), master_record.send(section))}
                     
-                    # if(master_is_match)
-                    #     candidates<< master_record
-                    # end
-                    
-                    allergiesMatch = codes_match?(test_record.allergies,master_record.allergies)
-                    care_goalsMatch = codes_match?(test_record.care_goals,master_record.care_goals)
-                    conditionsMatch = codes_match?(test_record.conditions,master_record.conditions)
-                    encountersMatch = codes_match?(test_record.encounters,master_record.encounters)
-                    immunizationsMatch = codes_match?(test_record.immunizations,master_record.immunizations)
-                    medical_equipmentMatch = codes_match?(test_record.medical_equipment,master_record.medical_equipment)
-                    medicationsMatch = codes_match?(test_record.medications,master_record.medications)
-                    proceduresMatch = codes_match?(test_record.procedures,master_record.procedures)
-                    insurance_providersMatch = codes_match?(test_record.insurance_providers,master_record.insurance_providers)
-    
-                    #create candidates based on matching codes - if all the above match then consider this master as candidate
-                    if(allergiesMatch && care_goalsMatch && conditionsMatch && encountersMatch &&  immunizationsMatch && medical_equipmentMatch &&  medicationsMatch && proceduresMatch &&  insurance_providersMatch)
+                    if(master_is_match)
                         candidates<< master_record
                     end
+                    
                 end    
             }
             candidates
