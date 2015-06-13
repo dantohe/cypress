@@ -12,13 +12,14 @@ module PatientFinder
     class Utils
         
         #some of records are created ambiguous on purpose (fr example some of them contain only encounters) - in order to disambiguate human intervention is needed - the following hash resolves the ambiguos cases
-        AMBIGUOUS_PATIENTS = {["ee85c89f24946e2ddca12c6edc5181dc", "eb6af018e11320f5c163624beb83767d"] => "ee85c89f24946e2ddca12c6edc5181dc"}            
-        AMBIGUOUS_PATIENTS[["0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d"]] = "0a26a978d07240b0f917e96727db31d8"    
-        AMBIGUOUS_PATIENTS[["929dd1f2c4c54c024fd4d18b1307fdb1", "29cecb1da08efd331fce823e12b607d5"]] = "929dd1f2c4c54c024fd4d18b1307fdb1"    
-        AMBIGUOUS_PATIENTS[["5f118631f09abdbdeb1962dc28bfeb27", "a6300c43651965991a4308ffaeb5381d"]] = "5f118631f09abdbdeb1962dc28bfeb27"    
-        AMBIGUOUS_PATIENTS[["7a86cc6d87cb84461ea190e7c706d81b", "258ee9087c5a5fe359ceb3aafff0dd76"]] = "258ee9087c5a5fe359ceb3aafff0dd76"    
-        AMBIGUOUS_PATIENTS[["7a86cc6d87cb84461ea190e7c706d81b", "1be81ce59da982792026cc82d95bc10e","511b530c8662f8df97eb97b3eefa0618","258ee9087c5a5fe359ceb3aafff0dd76"]] = "258ee9087c5a5fe359ceb3aafff0dd76"    
-        AMBIGUOUS_PATIENTS[["fed089904c10b81c036adddedddebe7b", "846c1c2ba8370c2f5504b315cc4b1d5d", "b5633133e3421216ced2bdef4dbf382d", "0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","b54a4e3ab37de7e5f8094793afb8a699","2678a4e396aaec03b860d5aeadcad8e6","929dd1f2c4c54c024fd4d18b1307fdb1","fdea0c22270417d9e59f20b07f642679","91bd37f9cebf7b6ef9f72d7fd6148a81","0085074bb549ffefffa6e16ff34df140","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d","470f57b022eaeffd4d599078e851a56d","0dbaf9336f7aa1590265250a0eebe548","29cecb1da08efd331fce823e12b607d5","d156a6d38e10efc30eda3cace7456537","8130b2ff5774f1593c86eba8dca4c37b","697e147f076648275e518e7b3ff41dcd"]] = "fed089904c10b81c036adddedddebe7b"       
+        
+        AMBIGUOUS_PATIENTS = {["ee85c89f24946e2ddca12c6edc5181dc", "eb6af018e11320f5c163624beb83767d"] => "ee85c89f24946e2ddca12c6edc5181dc",            
+            ["0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d"] => "0a26a978d07240b0f917e96727db31d8",    
+            ["929dd1f2c4c54c024fd4d18b1307fdb1", "29cecb1da08efd331fce823e12b607d5"] => "929dd1f2c4c54c024fd4d18b1307fdb1",
+            ["5f118631f09abdbdeb1962dc28bfeb27", "a6300c43651965991a4308ffaeb5381d"] => "5f118631f09abdbdeb1962dc28bfeb27",
+            ["7a86cc6d87cb84461ea190e7c706d81b", "258ee9087c5a5fe359ceb3aafff0dd76"] => "258ee9087c5a5fe359ceb3aafff0dd76",
+            ["7a86cc6d87cb84461ea190e7c706d81b", "1be81ce59da982792026cc82d95bc10e","511b530c8662f8df97eb97b3eefa0618","258ee9087c5a5fe359ceb3aafff0dd76"] => "258ee9087c5a5fe359ceb3aafff0dd76", 
+            ["fed089904c10b81c036adddedddebe7b", "846c1c2ba8370c2f5504b315cc4b1d5d", "b5633133e3421216ced2bdef4dbf382d", "0a26a978d07240b0f917e96727db31d8","ee85c89f24946e2ddca12c6edc5181dc","b54a4e3ab37de7e5f8094793afb8a699","2678a4e396aaec03b860d5aeadcad8e6","929dd1f2c4c54c024fd4d18b1307fdb1","fdea0c22270417d9e59f20b07f642679","91bd37f9cebf7b6ef9f72d7fd6148a81","0085074bb549ffefffa6e16ff34df140","343731b99c6bdb35a1fc31ce9ed6f889","eb6af018e11320f5c163624beb83767d","470f57b022eaeffd4d599078e851a56d","0dbaf9336f7aa1590265250a0eebe548","29cecb1da08efd331fce823e12b607d5","d156a6d38e10efc30eda3cace7456537","8130b2ff5774f1593c86eba8dca4c37b","697e147f076648275e518e7b3ff41dcd"] => "fed089904c10b81c036adddedddebe7b"}
         
         #find matches for test patients
         def self.get_MRNs(master_records, test_patients)
