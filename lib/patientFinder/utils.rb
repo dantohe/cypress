@@ -33,7 +33,7 @@ module PatientFinder
                 candidates = get_candidates_for_test(master_records, test_patient.record)
                 
                 #resolve cadidates to unique MRNs - with other words resolve the candidates
-                get_MRN_for_tests(candidates.map(&:medical_record_number), test_patient, tests_to_MRNs)
+                tests_to_MRNs[test_patient.fileName]=get_MRN_for_tests(candidates.map(&:medical_record_number))
             }
     
             tests_to_MRNs
@@ -47,15 +47,14 @@ module PatientFinder
             "too ambiguous #{candidate_MRNs}"
         end
     
-        #resolves the candidates to the test files (one test file - one candidate - when multiple candidates are found manual anotation is used)
-        def self.get_MRN_for_tests(candidate_MRNs, test_record, test_to_MRN_hash)
+        
+        #resolves the candidates - if one single candidate found then retunr that - if more then resolve them through disambiguation
+        def self.get_MRN_for_tests(candidate_MRNs)
             
-            if(candidate_MRNs.length==1)
-                test_to_MRN_hash[test_record.fileName]=candidate_MRNs.first
-            else
-                test_to_MRN_hash[test_record.fileName]=get_MRN_for_ambiguous(candidate_MRNs)
-            end
-        end    
+            return candidate_MRNs.first if(candidate_MRNs.length==1)
+            return get_MRN_for_ambiguous(candidate_MRNs) if (candidate_MRNs.length>1)
+        end
+        
     
         #finds sections with data for a record (out of a array of given sections)    
         # def self.get_non_empty_sections_for_record(sections, record)
