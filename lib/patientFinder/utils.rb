@@ -103,7 +103,16 @@ module PatientFinder
             patients_from_QRDAs
         end
     
+    
+       
+    
+        #collects master records from a Cypress mongo db
+        def self.get_master_records_from_cypress
+            Record.all_of(:last.in => [ /\b[A-Z]\b/])
+        end
         
+        
+        private         
         #entries can be allergies, encounters etc
         def self.get_hash_out_of_entries(entries)
              code_hash= Hash.new 
@@ -116,7 +125,7 @@ module PatientFinder
              end
              code_hash
         end
-    
+        
         #identifies if all the codes in a particular section of the test are in the same section of the master
         def self.codes_match?(test_entries,master_entries)
             
@@ -125,11 +134,9 @@ module PatientFinder
 
             (test_codes_hash.to_a - master_code_hash.to_a).empty?
         end
-    
-        #collects master records from a Cypress mongo db
-        def self.get_master_records_from_cypress
-            Record.all_of(:last.in => [ /\b[A-Z]\b/])
-        end
+        
+        private_class_method :get_hash_out_of_entries, :codes_match?
+        
         
     end
 end
