@@ -3,7 +3,7 @@ development:
     default:
       database: cypress_development
       hosts:
-        - localhost:27017
+        - 54.152.244.137:27017
   options:
     raise_not_found_error: false
 
@@ -21,7 +21,7 @@ production:
     default:
       database: cypress_production
       hosts:
-        - localhost:27017
+        - 54.152.244.137:27017
   options:
     raise_not_found_error: false
 
@@ -30,7 +30,7 @@ measure_eval:
     default:
       database: cypress_measure_eval
       hosts:
-        - localhost:27017
+        - 54.152.244.137:27017
   options:
     raise_not_found_error: false
 

@@ -132,6 +132,72 @@ $(document).ready(function() {
             cache = {}; // empty the cache again
         }
     });
+    $('#find_mrns').formwizard({
+        // !important - otherwise the rails form processing
+        // doesn't redirect properly.  set formPluginEnabled to false
+        formPluginEnabled: false,
+        validationEnabled: true,
+        historyEnabled : false, // unless you want back button support ala BBQ
+        focusFirstInput : true,
+        formOptions : {
+            dataType: 'json',
+            resetForm: true
+        },
+        textSubmit: 'Done',
+        disableUIStyles: true,
+        validationOptions: {
+            rules: {
+                "product_test[name]": "required",
+//                "product_test[patient_population]": "required",
+                "product_test[measure_ids][]": "required"
+            },
+            errorClass: "validationErrors",
+            messages: {
+                "product_test[name]": {
+                    required:"The test needs a name."
+                },
+//                "product_test[patient_population]": {
+//                    required:"Choose a patient population."
+//                },
+                "product_test[measure_ids][]": {
+                    required:"You must choose at least one quality measure."
+                }
+            },
+            errorPlacement: function(error, element) {
+                error.appendTo( $('#validationErrorMessages') );
+            }
+        }
+    }).bind("step_shown", function(event,data){ //TODO still need to hook up validation
+        // do screen-specific functions here
+        if (data.currentStep == "wizard-measures-screen") {
+            $.testWizard.updateMeasureSet($('[name=type]:checked').val(),$('[name=bundle_id]').val());
+        }
+//        if (data.currentStep == "wizard-patients-manual-screen") {
+//            $.testWizard.updateMinimalPatientSet();
+//        }
+        // update the progress indicator
+        $.testWizard.updateProgressBar(data.currentStep);
+
+        if(data.isLastStep){ // if this is the last step...then
+            $("#summaryContainer").empty().append("<ul/>"); // empty the container holding the
+            $.each(data.activatedSteps, function(i, id){ // for each of the activated steps...do
+                if(id === "wizard-summary-screen") return; // if it is the summary page then just return
+                cache[id] = $("#" + id).find(".input"); // else, find the div:s with class="input" and cache them with a key equal to the current step id
+                //cache[id].detach().appendTo('#summaryContainer').show().find(":input").removeAttr("disabled"); // detach the cached inputs and append them to the summary container, also show and enable them
+                $('#summaryContainer').append("<li>"+cache[id].value+"</li>")
+            });
+        }else if(data.previousStep === "wizard-summary-screen"){ // if we are movin back from the summary page
+            $.each(cache, function(id, inputs){ // for each of the keys in the cache...do
+                var i = inputs.detach().appendTo("#" + id).find(":input");  // put the input divs back into their normal step
+                if(id === data.currentStep){ // (we are moving back from the summary page so...) if enable inputs on the current step
+                    i.removeAttr("disabled");
+                }else{ // disable the inputs on the rest of the steps
+                    i.attr("disabled","disabled");
+                }
+            });
+            cache = {}; // empty the cache again
+        }
+    });
     // disableUIStyles doesn't prevent these classes from being added to the buttons.
     // we'll remove them here instead of overriding in the stylesheets.
     $("#navigation input").removeClass("ui-formwizard-button ui-wizard-content");
