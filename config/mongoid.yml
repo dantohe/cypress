@@ -1,7 +1,7 @@
 development:
   sessions:
     default:
-      database: cypress_development
+      database: patid
       hosts:
         - 54.152.244.137:27017
   options:

@@ -1,4 +1,8 @@
 Cypress::Application.routes.draw do
+  get 'file_mrns/index'
+
+  get 'file_mrns/import'
+
   root :to => "vendors#index"
   #match "/delayed_job" => DelayedJobMongoidWeb, :anchor => false
   devise_for :users
@@ -27,6 +31,9 @@ Cypress::Application.routes.draw do
         end
       end
     end
+  resources :file_mrns do
+    collection { post :import }
+  end
 
    resources :measures do
      get 'definition'

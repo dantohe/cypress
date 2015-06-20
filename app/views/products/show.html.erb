@@ -8,7 +8,8 @@
   <div class="buffered">
     <section class="tb">
       <div class="stacked" id="pageButtons">
-        <%= link_to "Find MRNs for Test", new_product_test_path(:product_id => @product), { :class => "cmd" } %>
+        <!--<%= link_to "Find MRNs for Test", new_product_test_path(:product_id => @product), { :class => "cmd" } %>-->
+        <%= link_to "Find MRNs for Test", file_mrns_url, { :class => "cmd" } %>
         <%= link_to "Add Test", new_product_test_path(:product_id => @product), { :class => "cmd" } %>
         <%= link_to "Edit Product", edit_product_path, { :class => "cmd" } %>
       </div>

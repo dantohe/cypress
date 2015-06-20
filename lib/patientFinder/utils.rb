@@ -5,7 +5,7 @@ require 'zip/zipfilesystem'
 require 'fileutils'
 require 'health-data-standards'
 require 'pry'
-Mongoid.load!("mongoid.yml", :development)
+# Mongoid.load!("mongoid.yml", :development)
 
 module PatientFinder
 # a collection of utilities grouped together under the same roof
