@@ -2,75 +2,75 @@ require_relative '../../mRNfinder.rb'
 require 'minitest/autorun'
 
 class TestPatientFinder <  Minitest::Test
-    
+
     def test_constructor
         assert_equal(@mrn_finder_1.test_archive, "test/fixtures/artifacts/T63-21.zip")
     end
-    
+
     def test_get_original_MRNs_for_tests_1
         assert_equal(@mrn_finder_1.get_original_MRNs_for_tests, @results_for_ZIP_FILE_T63_21)
     end
-    
+
     def test_get_original_MRNs_for_tests_2
         assert_equal(@mrn_finder_2.get_original_MRNs_for_tests, @results_for_ZIP_FILE_T63_22)
     end
-    
+
     def test_get_original_MRNs_for_tests_3
         assert_equal(@mrn_finder_3.get_original_MRNs_for_tests, @results_for_ZIP_FILE_T63_23)
     end
-    
+
     def test_get_original_MRNs_for_tests_4
         assert_equal(@mrn_finder_4.get_original_MRNs_for_tests, @results_for_ZIP_FILE_T63_24)
     end
-    
-    
+
+
     def setup
-        
+
         @mrn_finder_1=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-21.zip")
         @mrn_finder_2=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-22.zip")
         @mrn_finder_3=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-23.zip")
         @mrn_finder_4=PatientFinder::MRNfinder.new("test/fixtures/artifacts/T63-24.zip")
-        
-        @results_for_ZIP_FILE_T63_21 = {"0_Hazel_Abbott.xml" => "61aa020431420dce8f53b74352a990fe", 
-                        "1_Ruth_Baker.xml" => "343731b99c6bdb35a1fc31ce9ed6f889", 
-                        "2_Darryl_Barnes.xml" => "7a86cc6d87cb84461ea190e7c706d81b", 
-                        "3_Ana_Barton.xml" => "929dd1f2c4c54c024fd4d18b1307fdb1", 
-                        "4_Julie_Boone.xml" => "5407e0ea5126420644b503c66153eb3c", 
-                        "5_Ross_Brock.xml" => "5f118631f09abdbdeb1962dc28bfeb27", 
-                        "6_Philip_Casey.xml" => "185be4f0c1ea87f63e4326e45db87bdf", 
-                        "7_Leroy_Cohen.xml" => "a6300c43651965991a4308ffaeb5381d", 
-                        "8_Evelyn_Conner.xml" => "0a26a978d07240b0f917e96727db31d8", 
-                        "9_Nathan_Cross.xml" => "20a80b26a1bfa70740e243ea5ac1fea6", 
-                        "10_Josephine_Dean.xml" => "d045df54952043573bb6a94c374c8420", 
-                        "11_Sonia_Ellis.xml" => "ee85c89f24946e2ddca12c6edc5181dc", 
-                        "12_Delores_Fletcher.xml" => "29cecb1da08efd331fce823e12b607d5", 
-                        "13_Lydia_Ford.xml" => "fdea0c22270417d9e59f20b07f642679", 
-                        "14_Jeanette_Fowler.xml" => "d156a6d38e10efc30eda3cace7456537", 
-                        "15_Gary_Fox.xml" => "cce1bd3b83676d7a9b286b374b4c34f8", 
-                        "16_Sara_Garner.xml" => "88130abfa702d8f53ac7be76e9d24a58", 
-                        "17_Jeanette_Greer.xml" => "846c1c2ba8370c2f5504b315cc4b1d5d", 
-                        "18_Susan_Hanson.xml" => "511b530c8662f8df97eb97b3eefa0618", 
-                        "19_Lucy_Harmon.xml" => "ee85c89f24946e2ddca12c6edc5181dc", 
-                        "20_Seth_Harper.xml" => "258ee9087c5a5fe359ceb3aafff0dd76", 
-                        "21_Tara_Joseph.xml" => "1be81ce59da982792026cc82d95bc10e", 
-                        "22_Marc_Lawson.xml" => "7a86cc6d87cb84461ea190e7c706d81b", 
-                        "23_Keith_Logan.xml" => "bd2d8e0fd774e32f623e1fe5ad44781f", 
-                        "24_Sergio_Lucas.xml" => "0085074bb549ffefffa6e16ff34df140", 
-                        "25_Joshua_Massey.xml" => "91bd37f9cebf7b6ef9f72d7fd6148a81", 
-                        "26_Shawn_Maxwell.xml" => "5f118631f09abdbdeb1962dc28bfeb27", 
-                        "27_April_Mccormick.xml" => "0dbaf9336f7aa1590265250a0eebe548", 
-                        "28_Wayne_Morris.xml" => "2678a4e396aaec03b860d5aeadcad8e6", 
-                        "29_Jay_Reese.xml" => "e05ff19bd33566173fd742d4b9831f1f", 
-                        "30_Billy_Roberson.xml" => "ce83c561f62e245ad4e0ca648e9de0dd", 
-                        "31_Matthew_Salazar.xml" => "8130b2ff5774f1593c86eba8dca4c37b", 
-                        "32_Corey_Shelton.xml" => "b5633133e3421216ced2bdef4dbf382d", 
-                        "33_Georgia_Snyder.xml" => "b54a4e3ab37de7e5f8094793afb8a699", 
-                        "34_Marie_Stewart.xml" => "fed089904c10b81c036adddedddebe7b", 
-                        "35_Bruce_Stokes.xml" => "697e147f076648275e518e7b3ff41dcd", 
-                        "36_Virgil_Sullivan.xml" => "bc8f60f4cbde3d6c28974971b6880792", 
-                        "37_Eugene_Turner.xml" => "470f57b022eaeffd4d599078e851a56d", 
+
+        @results_for_ZIP_FILE_T63_21 = {"0_Hazel_Abbott.xml" => "61aa020431420dce8f53b74352a990fe",
+                        "1_Ruth_Baker.xml" => "343731b99c6bdb35a1fc31ce9ed6f889",
+                        "2_Darryl_Barnes.xml" => "7a86cc6d87cb84461ea190e7c706d81b",
+                        "3_Ana_Barton.xml" => "929dd1f2c4c54c024fd4d18b1307fdb1",
+                        "4_Julie_Boone.xml" => "5407e0ea5126420644b503c66153eb3c",
+                        "5_Ross_Brock.xml" => "5f118631f09abdbdeb1962dc28bfeb27",
+                        "6_Philip_Casey.xml" => "185be4f0c1ea87f63e4326e45db87bdf",
+                        "7_Leroy_Cohen.xml" => "a6300c43651965991a4308ffaeb5381d",
+                        "8_Evelyn_Conner.xml" => "0a26a978d07240b0f917e96727db31d8",
+                        "9_Nathan_Cross.xml" => "20a80b26a1bfa70740e243ea5ac1fea6",
+                        "10_Josephine_Dean.xml" => "d045df54952043573bb6a94c374c8420",
+                        "11_Sonia_Ellis.xml" => "ee85c89f24946e2ddca12c6edc5181dc",
+                        "12_Delores_Fletcher.xml" => "29cecb1da08efd331fce823e12b607d5",
+                        "13_Lydia_Ford.xml" => "fdea0c22270417d9e59f20b07f642679",
+                        "14_Jeanette_Fowler.xml" => "d156a6d38e10efc30eda3cace7456537",
+                        "15_Gary_Fox.xml" => "cce1bd3b83676d7a9b286b374b4c34f8",
+                        "16_Sara_Garner.xml" => "88130abfa702d8f53ac7be76e9d24a58",
+                        "17_Jeanette_Greer.xml" => "846c1c2ba8370c2f5504b315cc4b1d5d",
+                        "18_Susan_Hanson.xml" => "511b530c8662f8df97eb97b3eefa0618",
+                        "19_Lucy_Harmon.xml" => "ee85c89f24946e2ddca12c6edc5181dc",
+                        "20_Seth_Harper.xml" => "258ee9087c5a5fe359ceb3aafff0dd76",
+                        "21_Tara_Joseph.xml" => "1be81ce59da982792026cc82d95bc10e",
+                        "22_Marc_Lawson.xml" => "7a86cc6d87cb84461ea190e7c706d81b",
+                        "23_Keith_Logan.xml" => "bd2d8e0fd774e32f623e1fe5ad44781f",
+                        "24_Sergio_Lucas.xml" => "0085074bb549ffefffa6e16ff34df140",
+                        "25_Joshua_Massey.xml" => "91bd37f9cebf7b6ef9f72d7fd6148a81",
+                        "26_Shawn_Maxwell.xml" => "5f118631f09abdbdeb1962dc28bfeb27",
+                        "27_April_Mccormick.xml" => "0dbaf9336f7aa1590265250a0eebe548",
+                        "28_Wayne_Morris.xml" => "2678a4e396aaec03b860d5aeadcad8e6",
+                        "29_Jay_Reese.xml" => "e05ff19bd33566173fd742d4b9831f1f",
+                        "30_Billy_Roberson.xml" => "ce83c561f62e245ad4e0ca648e9de0dd",
+                        "31_Matthew_Salazar.xml" => "8130b2ff5774f1593c86eba8dca4c37b",
+                        "32_Corey_Shelton.xml" => "b5633133e3421216ced2bdef4dbf382d",
+                        "33_Georgia_Snyder.xml" => "b54a4e3ab37de7e5f8094793afb8a699",
+                        "34_Marie_Stewart.xml" => "fed089904c10b81c036adddedddebe7b",
+                        "35_Bruce_Stokes.xml" => "697e147f076648275e518e7b3ff41dcd",
+                        "36_Virgil_Sullivan.xml" => "bc8f60f4cbde3d6c28974971b6880792",
+                        "37_Eugene_Turner.xml" => "470f57b022eaeffd4d599078e851a56d",
                         "38_Julia_Waters.xml" => "5407e0ea5126420644b503c66153eb3c"}
-                        
+
         @results_for_ZIP_FILE_T63_22 = {"0_Elmer_Austin.xml"=>"b5633133e3421216ced2bdef4dbf382d",
                         "1_Bessie_Bowman.xml"=>"61aa020431420dce8f53b74352a990fe",
                         "2_Nathan_Carson.xml"=>"2678a4e396aaec03b860d5aeadcad8e6",
@@ -111,7 +111,7 @@ class TestPatientFinder <  Minitest::Test
                         "37_Derrick_Wagner.xml"=>"7a86cc6d87cb84461ea190e7c706d81b",
                         "38_Felicia_Webb.xml"=>"0dbaf9336f7aa1590265250a0eebe548",
                         "39_Brad_Wheeler.xml"=>"bc8f60f4cbde3d6c28974971b6880792"}
-                        
+
         @results_for_ZIP_FILE_T63_23 = {"0_Erika_Ball.xml"=>"61aa020431420dce8f53b74352a990fe",
                         "1_Terri_Barker.xml"=>"846c1c2ba8370c2f5504b315cc4b1d5d",
                         "2_Shawn_Benson.xml"=>"697e147f076648275e518e7b3ff41dcd",
@@ -152,8 +152,8 @@ class TestPatientFinder <  Minitest::Test
                         "37_Hazel_Vasquez.xml"=>"88130abfa702d8f53ac7be76e9d24a58",
                         "38_Edgar_Wells.xml"=>"ce83c561f62e245ad4e0ca648e9de0dd",
                         "39_Angel_Wood.xml"=>"91bd37f9cebf7b6ef9f72d7fd6148a81",
-                        "40_Ella_Woods.xml"=>"343731b99c6bdb35a1fc31ce9ed6f889"} 
-                        
+                        "40_Ella_Woods.xml"=>"343731b99c6bdb35a1fc31ce9ed6f889"}
+
         @results_for_ZIP_FILE_T63_24 = {"0_Lucille_Barker.xml"=>"1be81ce59da982792026cc82d95bc10e",
                         "1_Raymond_Becker.xml"=>"b5633133e3421216ced2bdef4dbf382d",
                         "2_Debbie_Boyd.xml"=>"5407e0ea5126420644b503c66153eb3c",
